@@ -48,9 +48,9 @@ public class UserService implements UserDetailsService {
 	//Aqui o consumo pode ser feito na tela de cadastro de usuarios ou na tela de registrar. (signUp)
 	public Optional<UserDTO> save(UserDTO personDTO) {
 		
-		UserDetails userDetails = userRepository.findByLogin(personDTO.getLogin());
+		Optional<UserDetails> userDetailsOpt = userRepository.findByLogin(personDTO.getLogin());
 		
-		if (userDetails != null) {
+		if (userDetailsOpt.isPresent()) {
 			//Encontrou alguem e nao pode continuar o processo de save.
 			throw new DuplicateLoginException("Login " + personDTO.getLogin() + " already exists.");
 		}
@@ -96,14 +96,14 @@ public class UserService implements UserDetailsService {
 	public Optional<List<UserDTO>>findByFirstName(String firstName) {
 		
 		return Optional.of(userRepository.findListByFirstName(firstName)
-				.stream()
-				.map(UserDTO::toDTO)
-				.collect(Collectors.toList()));
+										 .stream()
+										 .map(UserDTO::toDTO)
+										 .collect(Collectors.toList()));
 	
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return this.userRepository.findByLogin(username);
+		return this.userRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Usuario Nao encontrado"));
 	}
 }
