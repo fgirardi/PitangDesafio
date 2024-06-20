@@ -10,6 +10,8 @@ import { HttpClientModule} from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { LayoutComponent } from './layout/layout.component';
+import { AuthService } from './auth.service';
+import { ClientesService } from './clientes/clientes.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { LayoutComponent } from './layout/layout.component';
     
   ],
   providers: [
-    provideClientHydration()
+    ClientesService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

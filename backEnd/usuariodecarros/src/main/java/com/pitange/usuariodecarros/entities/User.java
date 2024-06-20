@@ -16,6 +16,8 @@ import com.pitange.usuariodecarros.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,9 +59,6 @@ public class User implements UserDetails {
 	private String phone;
 	
 	@Column(nullable = false, length = 100)
-	private String login;
-	
-	@Column(nullable = false, length = 100)
 	private String password;
 	
 	@Column(name = "data_cadastro", updatable = false)
@@ -69,6 +68,7 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserCar> userCars;
 	
+	@Enumerated(EnumType.STRING)
 	private UserRole role;
 	
 	@PrePersist
@@ -78,6 +78,7 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
 		if (this.role == UserRole.ADMIN) {
 			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
 		}
@@ -88,7 +89,7 @@ public class User implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return this.login;
+		return this.email;
 	}
 
 	@Override
@@ -109,6 +110,11 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.password;
 	}
 	
 	

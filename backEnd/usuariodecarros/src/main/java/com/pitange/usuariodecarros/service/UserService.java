@@ -48,9 +48,9 @@ public class UserService implements UserDetailsService {
 	//Aqui o consumo pode ser feito na tela de cadastro de usuarios ou na tela de registrar. (signUp)
 	public Optional<UserDTO> save(UserDTO personDTO) {
 		
-		Optional<UserDetails> userDetailsOpt = userRepository.findByLogin(personDTO.getLogin());
+		Optional<User> user = userRepository.findByLogin(personDTO.getEmail());
 		
-		if (userDetailsOpt.isPresent()) {
+		if (user.isPresent()) {
 			//Encontrou alguem e nao pode continuar o processo de save.
 			throw new DuplicateLoginException("Login " + personDTO.getLogin() + " already exists.");
 		}

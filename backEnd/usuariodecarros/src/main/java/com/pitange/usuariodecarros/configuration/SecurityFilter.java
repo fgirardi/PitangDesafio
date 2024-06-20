@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.pitange.usuariodecarros.repository.UserRepository;
-import com.pitange.usuariodecarros.service.TokenProvider;
+import com.pitange.usuariodecarros.service.JWTTokenProvider;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,31 +18,39 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-  
-  @Autowired
-  TokenProvider tokenService;
-  
-  @Autowired
-  UserRepository userRepository;
 
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    
-	var token = this.recoverToken(request);
-    if (token != null) {
-      var login = tokenService.validateToken(token);
-      var user = userRepository.findByLogin(login);
-      //var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-      //SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-    filterChain.doFilter(request, response); //Chama o proximo filtro.
-  }
+	@Autowired
+	JWTTokenProvider tokenService;
 
-  private String recoverToken(HttpServletRequest request) {
-    var authHeader = request.getHeader("Authorization");
-    if (authHeader == null)
-      return null;
-    return authHeader.replace("Bearer ", ""); //So quero saber do token.
-  }
+	@Autowired
+	UserRepository userRepository;
+	
+	private String recoverJWTToken(HttpServletRequest request) {
+
+		var authHeader = request.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer "))
+			return null;
+
+		return authHeader.replace("Bearer ", ""); // So quero saber do token.
+	}
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+
+		var token = this.recoverJWTToken(request);
+
+		if (token != null) {
+			var email = tokenService.getSubjectFromToken(token);
+			var userOpt = userRepository.findByLogin(email);
+			if (userOpt.isPresent()) {
+				var authentication = new UsernamePasswordAuthenticationToken(userOpt.get(), null,userOpt.get().getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		}
+		filterChain.doFilter(request, response); // Chama o proximo filtro.
+	}
+
+	
 }

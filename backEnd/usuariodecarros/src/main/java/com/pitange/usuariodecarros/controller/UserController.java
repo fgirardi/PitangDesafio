@@ -23,7 +23,7 @@ import com.pitange.usuariodecarros.dto.AuthenticationDTO;
 import com.pitange.usuariodecarros.dto.LoginResponseDTO;
 import com.pitange.usuariodecarros.dto.UserDTO;
 import com.pitange.usuariodecarros.exception.UserCreationException;
-import com.pitange.usuariodecarros.service.TokenProvider;
+import com.pitange.usuariodecarros.service.JWTTokenProvider;
 import com.pitange.usuariodecarros.service.UserService;
 
 import jakarta.validation.Valid;
@@ -36,10 +36,10 @@ public class UserController {
 	
 	private final AuthenticationManager authenticationManager;
 	
-	private final TokenProvider tokenProvider;
+	private final JWTTokenProvider tokenProvider;
 	
 	@Autowired
-	public UserController(UserService personService, AuthenticationManager authenticationManager, TokenProvider tokenProvider) {
+	public UserController(UserService personService, AuthenticationManager authenticationManager, JWTTokenProvider tokenProvider) {
 		this.personService = personService;
 		this.authenticationManager = authenticationManager;
 		this.tokenProvider = tokenProvider;
