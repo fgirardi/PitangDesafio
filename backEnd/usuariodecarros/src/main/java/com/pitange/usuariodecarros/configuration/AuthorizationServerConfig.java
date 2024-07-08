@@ -1,7 +1,9 @@
 package com.pitange.usuariodecarros.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -20,20 +22,30 @@ import org.springframework.security.oauth2.server.authorization.config.TokenSett
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.UUID;
 
 @Configuration
 public class AuthorizationServerConfig {
+    
+    @Value("${security.clientID}")
+    private String clientID;
+    
 
 	@Bean
 	public RegisteredClientRepository registeredClientRepository() {
 		RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-				.clientId("your-client-id")
-				.clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode("your-client-secret"))
+				.clientId(this.clientID)
+				.clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.clientID))
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
 				.scope("read")
 				.scope("write")
@@ -48,21 +60,30 @@ public class AuthorizationServerConfig {
 	}
 
 	@Bean
-	public ProviderSettings providerSettings() {
+	public ProviderSettings providerSettings(AuthProperties authProperties) {
+		
 		return ProviderSettings.builder()
-				.issuer("http://localhost:8080")
+				.issuer(authProperties.getProviderUri())
 				.build();
 	}
-
+	
 	@Bean
-	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
-		http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-				.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).formLogin(withDefaults())
-				.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
-
-		return http.build();
-
+	public JWKSet jwSset(AuthProperties authProperties) throws Exception {
+		final var jksProperties = authProperties.getJks();
+		final String jksPath = authProperties.getJks().getPath();
+		final InputStream inputStream = new ClassPathResource(jksPath)
+											.getInputStream();
+		
+		final KeyStore keyStore = KeyStore.getInstance("JKS");
+		keyStore.load(inputStream, jksProperties.getStorepass().toCharArray());
+			
+		RSAKey rsakey = RSAKey.load(keyStore, 
+									jksProperties.getAlias(), 
+									jksProperties.getKeypass().toCharArray());
+		
+		return new JWKSet(rsakey);
+	
 	}
+		
+	
 }
