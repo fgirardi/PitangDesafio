@@ -44,6 +44,12 @@
 			<version>2.6.8</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>9.22</version>
+		</dependency>
+
 		<!--
 		https://mvnrepository.com/artifact/org.springframework.security/spring-security-jwt -->
 		<dependency>
@@ -76,7 +82,7 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.12.5</version>
 		</dependency>
-	
+
 		<!--
 		https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
 		<dependency>
