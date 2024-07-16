@@ -108,7 +108,8 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        // Cria um cliente registrado com ID, clientID, clientSecret, métodos de autenticação, escopos e tipos de concessão
+        
+    	// Cria um cliente registrado com ID, clientID, clientSecret, métodos de autenticação, escopos e tipos de concessão
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(this.clientID)
                 .clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.clientID))
@@ -118,6 +119,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri("https://localhost:8080")
                 .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1))
                         .refreshTokenTimeToLive(Duration.ofDays(30)).build())
                 .clientSettings(ClientSettings.builder().build()).build();
