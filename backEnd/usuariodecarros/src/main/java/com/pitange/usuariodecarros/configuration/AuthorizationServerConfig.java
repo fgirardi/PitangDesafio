@@ -26,6 +26,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.pitange.usuariodecarros.properties.AuthProperties;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -119,7 +120,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("https://localhost:8080")
+                .redirectUri("https://localhost:8080/redirect")
                 .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1))
                         .refreshTokenTimeToLive(Duration.ofDays(30)).build())
                 .clientSettings(ClientSettings.builder().build()).build();
@@ -138,7 +139,12 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public AuthorizationServerSettings providerSettings(AuthProperties authProperties) {
-        return AuthorizationServerSettings.builder()
+    	
+    	System.out.println("================================================");
+    	System.out.println("ProviderUri: " + authProperties.getProviderUri());
+    	System.out.println("================================================");
+    	
+    	return AuthorizationServerSettings.builder()
                 .issuer(authProperties.getProviderUri())
                 .build();
     }

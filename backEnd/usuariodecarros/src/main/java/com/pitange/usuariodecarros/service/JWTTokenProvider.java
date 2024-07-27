@@ -1,16 +1,18 @@
 package com.pitange.usuariodecarros.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.pitange.usuariodecarros.dto.AuthenticationDTO;
+import com.pitange.usuariodecarros.properties.JwtProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
 
-import java.security.Key;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,22 +28,28 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 @Service
 public class JWTTokenProvider {
+	
+	private final JwtProperties jwtProperties;
+	  
+	private static final Logger logger = LoggerFactory.getLogger(JWTTokenProvider.class);
 
-    @Value("${security.jwt.token.secret-key}")
-    private String JWT_SECRET;
-
+	@Autowired
+    public JWTTokenProvider(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
+	
     private Instant genAccessExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
     
     private SecretKey getPublicSigningKey() {
-        byte[] decodedKey = Decoders.BASE64.decode(JWT_SECRET);
+        byte[] decodedKey = Decoders.BASE64.decode(this.jwtProperties.getSecretKey());
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, "HmacSHA256");
     }
 
     public String generateAccessToken(AuthenticationDTO user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+            Algorithm algorithm = Algorithm.HMAC256(this.jwtProperties.getSecretKey());
             return JWT.create()
                     .withSubject(user.login())
                     .withClaim("username", user.login())
@@ -54,7 +62,7 @@ public class JWTTokenProvider {
 
     public String getSubjectFromToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+            Algorithm algorithm = Algorithm.HMAC256(this.jwtProperties.getSecretKey());
             return JWT.require(algorithm)
                     .build()
                     .verify(token)

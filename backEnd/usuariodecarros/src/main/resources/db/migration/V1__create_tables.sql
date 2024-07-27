@@ -25,6 +25,7 @@ CREATE TABLE oauth2_registered_client (
     client_authentication_methods VARCHAR(1000) NOT NULL,
     authorization_grant_types VARCHAR(1000) NOT NULL,
     redirect_uris VARCHAR(1000),
+	POST_LOGOUT_REDIRECT_URIS VARCHAR(1000),
     scopes VARCHAR(1000),
     client_settings VARCHAR(2000) NOT NULL,
     token_settings VARCHAR(2000) NOT NULL

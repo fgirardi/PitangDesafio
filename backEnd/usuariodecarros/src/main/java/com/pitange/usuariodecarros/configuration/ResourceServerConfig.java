@@ -47,15 +47,17 @@ public class ResourceServerConfig {
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 // Permite requisições POST para /api/users/** apenas para usuários com os papéis ADMIN ou USER
                 .requestMatchers(HttpMethod.POST, "/api/users/**").hasAnyRole("ADMIN", "USER")
+                // Permite acesso ao console do H2
+                .requestMatchers("/h2-console/**").permitAll()
                 // Requer autenticação para qualquer outra requisição
                 .anyRequest().authenticated())
             // Adiciona o filtro de segurança customizado antes do filtro padrão de autenticação de username e senha
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-            // Configura a página de login e permite acesso público a ela
-            .formLogin(formLogin -> formLogin.loginPage("/login").permitAll())
             // Configura a funcionalidade de logout e permite acesso público a ela
             .logout(logout -> logout.permitAll());
 
+        // Permite que o console do H2 seja exibido em um frame
+        http.headers().frameOptions().disable();
         // Retorna a cadeia de filtros de segurança configurada
         return http.build();
     }

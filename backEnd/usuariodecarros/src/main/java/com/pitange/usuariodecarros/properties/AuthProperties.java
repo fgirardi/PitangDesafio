@@ -1,4 +1,4 @@
-package com.pitange.usuariodecarros.configuration;
+package com.pitange.usuariodecarros.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Component
 @Validated
-@ConfigurationProperties("security")
+@ConfigurationProperties(prefix = "security")
 @Data
 public class AuthProperties {
 	
@@ -20,7 +20,7 @@ public class AuthProperties {
 	@NotNull
 	JksProperties jks;
 	
-	static class JksProperties {
+	public static class JksProperties {
 		@NotBlank
 		private String keypass;
 		
