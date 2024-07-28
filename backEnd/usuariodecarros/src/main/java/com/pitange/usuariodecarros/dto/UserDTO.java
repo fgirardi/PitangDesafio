@@ -2,6 +2,8 @@ package com.pitange.usuariodecarros.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.stereotype.Component;
@@ -23,8 +25,8 @@ import lombok.Setter;
 @Component
 @AllArgsConstructor
 public class UserDTO {
-	
-	public UserDTO(){}
+    
+    public UserDTO() {}
 
     private Long id;
     
@@ -52,34 +54,34 @@ public class UserDTO {
     @NotEmpty(message = "{field.mandatory}")
     private String password;
     
-	@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataCadastro;
-	
-	private UserRole role;
+    
+    private Set<UserRole> roles;
 
-    public static UserDTO toDTO(User personModel) {
+    public static UserDTO toDTO(User user) {
         return UserDTO.builder()
-                .id(personModel.getId())
-                .firstName(personModel.getFirstName())
-                .lastName(personModel.getLastName())
-                .email(personModel.getEmail())
-                .birthday(personModel.getBirthday())
-                .phone(personModel.getPhone())
-                .dataCadastro(personModel.getDataCadastro())
-                .role(personModel.getRole())
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .birthday(user.getBirthday())
+                .phone(user.getPhone())
+                .dataCadastro(user.getDataCadastro())
+                .roles(user.getRoles())
                 .build();
     }
 
-    public static User toModel(UserDTO personDTO) {
+    public static User toModel(UserDTO userDTO) {
         return User.builder()
-                .id(personDTO.getId())
-                .firstName(personDTO.getFirstName())
-                .lastName(personDTO.getLastName())
-                .email(personDTO.getEmail())
-                .birthday(personDTO.getBirthday())
-                .phone(personDTO.getPhone())
-                .dataCadastro(personDTO.getDataCadastro())
-                .role(personDTO.getRole())
+                .id(userDTO.getId())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .email(userDTO.getEmail())
+                .birthday(userDTO.getBirthday())
+                .phone(userDTO.getPhone())
+                .dataCadastro(userDTO.getDataCadastro())
+                .roles(userDTO.getRoles())
                 .build();
     }
 }

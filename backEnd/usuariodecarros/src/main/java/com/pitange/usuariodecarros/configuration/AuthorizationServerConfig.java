@@ -52,7 +52,7 @@ public class AuthorizationServerConfig {
     /**
      * Configura e registra clientes autorizados no servidor de autorização usando um repositório em memória.
      *
-     * @return o repositório de clientes registrados em memória
+     * @return o repositório de clientes registrados
      * AuthorizationGrantType.AUTHORIZATION_CODE
 		Descrição: 
 			O fluxo de Autorização por Código é um dos mais seguros e comuns fluxos de autorização usados pelo OAuth 2.0.
@@ -140,16 +140,13 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings providerSettings(AuthProperties authProperties) {
     	
-    	System.out.println("================================================");
-    	System.out.println("ProviderUri: " + authProperties.getProviderUri());
-    	System.out.println("================================================");
-    	
     	return AuthorizationServerSettings.builder()
                 .issuer(authProperties.getProviderUri())
                 .build();
     }
     
     /**
+     * Usada para assinar tokens de acesso
      * Configura o conjunto de chaves JWK carregando uma chave RSA de um arquivo JKS.
      *
      * @param authProperties as propriedades de autenticação
