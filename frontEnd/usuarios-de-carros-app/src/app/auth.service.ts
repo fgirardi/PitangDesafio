@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from './environment/environment';
+import { AuthenticationDTO } from './login/authenticationdto';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,6 @@ export class AuthService {
 
   constructor(private http : HttpClient) { }
 
-  salvar() {}
+  salvar(authenticationDTO : AuthenticationDTO) {}
 
 }
