@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationDTO } from './authenticationdto';
+import  { AuthService} from '../auth.service';
 
 
 @Component({
@@ -15,7 +16,8 @@ export class LoginComponent {
   loginError: boolean;
   novoUsuario : boolean;
 
-  constructor(private router : Router) {
+  constructor(private router      : Router,
+              private authService : AuthService) {
 
   }
 
@@ -30,6 +32,10 @@ export class LoginComponent {
   
   cancelaCadastro() {
     this.novoUsuario = false;
+  }
+
+  cadastrar() {
+    const 
   }
 
 }
