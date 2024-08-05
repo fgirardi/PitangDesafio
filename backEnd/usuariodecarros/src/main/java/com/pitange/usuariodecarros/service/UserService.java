@@ -93,9 +93,9 @@ public class UserService implements UserDetailsService {
 		        });
 	}
 	
-	public Optional<List<UserDTO>>findByFirstName(String firstName) {
+	public Optional<List<UserDTO>>findByUserName(String userName) {
 		
-		return Optional.of(userRepository.findListByFirstName(firstName)
+		return Optional.of(userRepository.findListByUsername(userName)
 										 .stream()
 										 .map(UserDTO::toDTO)
 										 .collect(Collectors.toList()));

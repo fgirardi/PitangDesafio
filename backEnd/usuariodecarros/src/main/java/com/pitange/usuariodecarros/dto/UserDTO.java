@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pitange.usuariodecarros.entities.User;
-import com.pitange.usuariodecarros.enums.UserRole;
+import com.pitange.usuariodecarros.entities.Roles;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -31,10 +31,7 @@ public class UserDTO {
     private Long id;
     
     @NotEmpty(message = "{first.name.mandatory}")
-    private String firstName;
-    
-    @NotEmpty(message = "{field.mandatory}")
-    private String lastName;
+    private String username;
     
     @Email
     @NotEmpty(message = "{field.mandatory}")
@@ -57,13 +54,12 @@ public class UserDTO {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataCadastro;
     
-    private Set<UserRole> roles;
+    private Set<Roles> roles;
 
     public static UserDTO toDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
@@ -75,8 +71,7 @@ public class UserDTO {
     public static User toModel(UserDTO userDTO) {
         return User.builder()
                 .id(userDTO.getId())
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
+                .username(userDTO.getUsername())
                 .email(userDTO.getEmail())
                 .birthday(userDTO.getBirthday())
                 .phone(userDTO.getPhone())

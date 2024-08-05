@@ -84,10 +84,10 @@ public class UserController {
 		
 	}
 	
-	@GetMapping("/searchByFirstName")
-	public List<UserDTO> searchByFirstName(@RequestParam(value = "firstName") String firstName) {
+	@GetMapping("/findByUserName")
+	public List<UserDTO> searchByFirstName(@RequestParam(value = "userName") String userName) {
 		
-		return personService.findByFirstName(firstName)
+		return personService.findByUserName(userName)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 	

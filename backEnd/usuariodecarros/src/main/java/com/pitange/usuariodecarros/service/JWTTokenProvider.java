@@ -3,7 +3,6 @@ package com.pitange.usuariodecarros.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.pitange.usuariodecarros.dto.AuthenticationDTO;
@@ -75,7 +74,7 @@ public class JWTTokenProvider {
     public Claims getAllClaims(String token) {
        
         return Jwts.parser()
-                .verifyWith(getPublicSigningKey())
+                .verifyWith(this.getPublicSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

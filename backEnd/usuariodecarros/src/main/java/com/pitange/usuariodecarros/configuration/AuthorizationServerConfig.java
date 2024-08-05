@@ -50,7 +50,7 @@ public class AuthorizationServerConfig {
     private String clientID;
 
     /**
-     * Configura e registra clientes autorizados no servidor de autorização usando um repositório em memória.
+     * Configura e registra clientes autorizados no servidor de autorização usando um repositório em DB.
      *
      * @return o repositório de clientes registrados
      * AuthorizationGrantType.AUTHORIZATION_CODE

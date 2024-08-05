@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_car")
+@Table(name = "user_roles")
 @EqualsAndHashCode(of = "id")
-public class UserCar {
+public class UserRoles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +29,9 @@ public class UserCar {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User person;
 
     @ManyToOne
-    @JoinColumn(name = "car_id")
+    @JoinColumn(name = "role_id")
     private Car car;
 }
