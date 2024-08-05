@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationDTO } from './authenticationdto';
 import  { AuthService} from '../auth.service';
+import { response } from 'express';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class LoginComponent {
   password : string;
   loginError: boolean;
   novoUsuario : boolean;
+  mensagemSucesso : string;
 
   constructor(private router      : Router,
               private authService : AuthService) {
@@ -35,7 +37,18 @@ export class LoginComponent {
   }
 
   cadastrar() {
-    const 
+    const  authenticationDTO : AuthenticationDTO = new AuthenticationDTO();
+    authenticationDTO.login    = this.login;
+    authenticationDTO.password = this.password;
+    this.authService
+      .salvar(authenticationDTO)
+      .subscribe(response => {
+        this.mensagemSucesso = "Usuario criado com sucesso";
+        this.loginError = false;
+      }, error => {
+        this.loginError = true;
+        this.mensagemSucesso = "";
+      })
   }
 
 }

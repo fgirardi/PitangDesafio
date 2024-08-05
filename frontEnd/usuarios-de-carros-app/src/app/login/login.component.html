@@ -36,10 +36,14 @@
                                     <button type="submit" class="btn btn-primary" *ngIf="!novoUsuario">
                                         Logar
                                     </button>
-                                    <button type="button" class="btn btn-success" *ngIf="novoUsuario">
+                                    <button type="button" class="btn btn-success"
+                                            (click)="cadastrar()"  
+                                            *ngIf="novoUsuario">
                                         Cadastrar
                                     </button>
-                                    <button type="button" (click)="cancelaCadastro()" class="btn btn-danger ml-1" *ngIf="novoUsuario">
+                                    <button type="button" class="btn btn-danger ml-1" 
+                                    (click)="cancelaCadastro()" 
+                                    *ngIf="novoUsuario">
                                         Cancelar
                                     </button>
                                 </div>
