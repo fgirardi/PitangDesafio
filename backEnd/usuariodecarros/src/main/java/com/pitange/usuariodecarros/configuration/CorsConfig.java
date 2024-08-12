@@ -28,7 +28,7 @@ public class CorsConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         // Allow requests from any origin by setting allowed origins to "*"
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
 
         // Allow any header in the requests by setting allowed headers to "*"
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));

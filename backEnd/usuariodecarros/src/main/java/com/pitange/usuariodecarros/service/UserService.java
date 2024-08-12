@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
 		
 		if (user.isPresent()) {
 			//Encontrou alguem e nao pode continuar o processo de save.
-			throw new DuplicateLoginException("Login " + personDTO.getLogin() + " already exists.");
+			throw new DuplicateLoginException("Email: " + personDTO.getEmail() + " already exists.");
 		}
 		
 		User userModel = UserDTO.toModel(personDTO);

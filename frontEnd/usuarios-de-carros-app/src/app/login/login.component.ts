@@ -48,6 +48,9 @@ export class LoginComponent {
       }, error => {
         this.loginError = true;
         this.mensagemSucesso = "";
+        if (error.status === 400) {
+          console.error('Status Code 400 = Bad Request: ', error.error);
+        }
       })
   }
 

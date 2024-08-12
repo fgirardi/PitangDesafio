@@ -46,7 +46,7 @@ public class ResourceServerConfig {
                 // Permite todas as requisições POST para o endpoint /login
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 // Permite requisições POST para /api/users/** apenas para usuários com os papéis ADMIN ou USER
-                .requestMatchers(HttpMethod.POST, "/api/users/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 // Permite acesso ao console do H2
                 .requestMatchers("/h2-console/**").permitAll()
                 // Requer autenticação para qualquer outra requisição

@@ -30,26 +30,22 @@ public class UserDTO {
 
     private Long id;
     
-    @NotEmpty(message = "{first.name.mandatory}")
+    @NotEmpty(message = "{name.mandatory}")
     private String username;
     
     @Email
-    @NotEmpty(message = "{field.mandatory}")
+    @NotEmpty(message = "{email.mandatory}")
     private String email;
     
-    @NotNull
+    @NotEmpty(message = "{password.mandatory}")
+    private String password;
+    
     @JsonFormat(pattern = "dd/MM/yyyy")
-    @NotEmpty(message = "{field.mandatory}")
+    @NotEmpty(message = "{birthday.mandatory}")
     private LocalDate birthday;
     
-    @NotEmpty(message = "{field.mandatory}")
+    @NotEmpty(message = "{phone.mandatory}")
     private String phone;
-    
-    @NotEmpty(message = "{field.mandatory}")
-    private String login;
-    
-    @NotEmpty(message = "{field.mandatory}")
-    private String password;
     
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataCadastro;
