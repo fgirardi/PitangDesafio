@@ -93,9 +93,9 @@ public class UserService implements UserDetailsService {
 		        });
 	}
 	
-	public Optional<List<UserDTO>>findByUserName(String userName) {
+	public Optional<List<UserDTO>>findListByEmail(String email) {
 		
-		return Optional.of(userRepository.findListByUsername(userName)
+		return Optional.of(userRepository.findListByEmail(email)
 										 .stream()
 										 .map(UserDTO::toDTO)
 										 .collect(Collectors.toList()));
@@ -103,7 +103,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return this.userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Usuario Nao encontrado"));
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		return this.userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario Nao encontrado"));
 	}
 }

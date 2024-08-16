@@ -44,7 +44,7 @@ public class Car {
 	private String color;
 	
 	@OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserCar> userCars;
+    private Set<ClientCar> userCars;
 	
 	@Column(name = "data_cadastro", updatable = false)
 	private LocalDateTime dataCadastro;

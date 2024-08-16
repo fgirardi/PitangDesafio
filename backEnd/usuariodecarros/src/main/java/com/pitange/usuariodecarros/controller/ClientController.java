@@ -21,54 +21,55 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.pitange.usuariodecarros.dto.AuthenticationDTO;
 import com.pitange.usuariodecarros.dto.LoginResponseDTO;
-import com.pitange.usuariodecarros.dto.UserDTO;
+import com.pitange.usuariodecarros.dto.ClientDTO;
 import com.pitange.usuariodecarros.exception.UserCreationException;
+import com.pitange.usuariodecarros.service.ClientService;
 import com.pitange.usuariodecarros.service.JWTTokenProvider;
 import com.pitange.usuariodecarros.service.UserService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/clients")
+public class ClientController {
 
-	private final UserService personService;
+	private final ClientService clientService;
 	
 	private final AuthenticationManager authenticationManager;
 	
 	private final JWTTokenProvider tokenProvider;
 	
 	@Autowired
-	public UserController(UserService personService, AuthenticationManager authenticationManager, JWTTokenProvider tokenProvider) {
-		this.personService = personService;
+	public ClientController(ClientService clientService, AuthenticationManager authenticationManager, JWTTokenProvider tokenProvider) {
+		this.clientService = clientService;
 		this.authenticationManager = authenticationManager;
 		this.tokenProvider = tokenProvider;
 	}
 
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> findAll() {
+	public ResponseEntity<List<ClientDTO>> findAll() {
 		
-		List<UserDTO> personDTOList = personService.findAll();		
+		List<ClientDTO> personDTOList = clientService.findAll();		
 		return ResponseEntity.status(HttpStatus.OK).body(personDTOList);
 	}
 	
 	@GetMapping("{id}")
-	public UserDTO findById(@PathVariable Long id) {
-		return personService.findById(id)
+	public ClientDTO findById(@PathVariable Long id) {
+		return clientService.findById(id)
 							.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 	
 	 @PostMapping
 	 @ResponseStatus(HttpStatus.CREATED)
-	 public UserDTO save(@RequestBody @Valid UserDTO personDTO) {
-		 return personService.save(personDTO).orElseThrow(() -> new UserCreationException("Failed to create user"));
+	 public ClientDTO save(@RequestBody @Valid ClientDTO personDTO) {
+		 return clientService.save(personDTO).orElseThrow(() -> new UserCreationException("Failed to create user"));
 	 }
 	
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteById(@PathVariable Long id) {
 		
-		if (personService.deleteById(id).isEmpty()) {
+		if (clientService.deleteById(id).isEmpty()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	    }
 		
@@ -76,23 +77,19 @@ public class UserController {
 	
 	@PutMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateId(@PathVariable Long id, @RequestBody @Valid UserDTO personDTO) {
+	public void updateId(@PathVariable Long id, @RequestBody @Valid ClientDTO personDTO) {
 		
-		if (personService.updateById(id, personDTO).isEmpty()) {
+		if (clientService.updateById(id, personDTO).isEmpty()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	    }
 		
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+	@GetMapping("/findListByUsername")
+	public List<ClientDTO> findListByUsername(@RequestParam(value = "clientName") String userName) {
 		
-		var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
-		var auth = this.authenticationManager.authenticate(usernamePassword);
-		
-		var token = tokenProvider.generateAccessToken((AuthenticationDTO) auth.getPrincipal());
-		
-		return ResponseEntity.ok(new LoginResponseDTO(token));
-		
+		return clientService.findListByUsername(userName)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
+	
 }

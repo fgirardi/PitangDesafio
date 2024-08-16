@@ -31,23 +31,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Table(name = "users")
-@Entity(name = "users")
+@Table(name = "client")
+@Entity(name = "client")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class User implements UserDetails {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "client_id")
     private Long id;
 
     @Column(nullable = false, length = 100)
+    private String name;
+    
+    @Column(nullable = false, length = 100)
     private String email;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate birthday;
+    
+    private String tipoCliente;
+
+    private String phone;
 
     @Column(nullable = false, length = 100)
     private String password;
@@ -56,6 +65,8 @@ public class User implements UserDetails {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataCadastro;
 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClientCar> userCars;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -63,47 +74,10 @@ public class User implements UserDetails {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Roles> roles = new HashSet<>();
 
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDateTime.now();
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
 }
