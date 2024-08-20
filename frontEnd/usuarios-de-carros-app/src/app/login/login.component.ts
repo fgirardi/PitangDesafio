@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationDTO } from './authenticationdto';
+import { UserDTO } from './userDTO';
 import  { AuthService} from '../auth.service';
 import { response } from 'express';
 
@@ -12,11 +12,12 @@ import { response } from 'express';
 })
 export class LoginComponent {
   
-  login : string;
+  email : string;
   password : string;
   loginError: boolean;
   novoUsuario : boolean;
-  mensagemSucesso : string;
+  mensagem : string;
+  errors : String[];
 
   constructor(private router      : Router,
               private authService : AuthService) {
@@ -37,20 +38,22 @@ export class LoginComponent {
   }
 
   cadastrar() {
-    const  authenticationDTO : AuthenticationDTO = new AuthenticationDTO();
-    authenticationDTO.login    = this.login;
-    authenticationDTO.password = this.password;
+    const  userDTO : UserDTO = new UserDTO();
+    userDTO.email    = this.email;
+    userDTO.password = this.password;
+    console.log(userDTO);
     this.authService
-      .salvar(authenticationDTO)
+      .salvar(userDTO)
       .subscribe(response => {
-        this.mensagemSucesso = "Usuario criado com sucesso";
+        this.mensagem = "Usuario criado com sucesso";
         this.loginError = false;
-      }, error => {
+        this.novoUsuario = false;
+        this.email = '';
+        this.password = '';
+        this.errors = [];
+      }, errorResponse => {
         this.loginError = true;
-        this.mensagemSucesso = "";
-        if (error.status === 400) {
-          console.error('Status Code 400 = Bad Request: ', error.error);
-        }
+        this.errors = errorResponse.error.messages;
       })
   }
 

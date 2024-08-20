@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from './environment/environment';
-import { AuthenticationDTO } from './login/authenticationdto';
+import { UserDTO } from './login/userDTO';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,11 +10,12 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   apiURL : string = environment.apiURLBase + "/users"
+  token : string = environment.apiURLBase + "/oauth/token"
 
   constructor(private http : HttpClient) { }
 
-  salvar(authenticationDTO : AuthenticationDTO) : Observable<any> {
-      return this.http.post<any>(this.apiURL, authenticationDTO);
+  salvar(userDTO : UserDTO) : Observable<any> {
+      return this.http.post<any>(this.apiURL, userDTO);
   }
 
 }
