@@ -48,6 +48,9 @@ public class AuthorizationServerConfig {
     // Injetando o valor da propriedade 'security.clientID' definida em um arquivo de propriedades
     @Value("${security.clientID}")
     private String clientID;
+    
+    @Value("${security.secret-key}")
+    private String secretKey;
 
     /**
      * Configura e registra clientes autorizados no servidor de autorização usando um repositório em DB.
@@ -113,7 +116,7 @@ public class AuthorizationServerConfig {
     	// Cria um cliente registrado com ID, clientID, clientSecret, métodos de autenticação, escopos e tipos de concessão
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(this.clientID)
-                .clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.clientID))
+                .clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.secretKey))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
                 .scope("read")
                 .scope("write")

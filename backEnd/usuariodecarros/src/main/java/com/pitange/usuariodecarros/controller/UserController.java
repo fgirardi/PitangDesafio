@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -60,8 +58,8 @@ public class UserController {
 	
 	 @PostMapping
 	 @ResponseStatus(HttpStatus.CREATED)
-	 public UserDTO save(@RequestBody @Valid UserDTO personDTO) {
-		 return personService.save(personDTO).orElseThrow(() -> new UserCreationException("Failed to create user"));
+	 public UserDTO save(@RequestBody @Valid UserDTO userDTO) {
+		 return personService.save(userDTO).orElseThrow(() -> new UserCreationException("Failed to create user"));
 	 }
 	
 	@DeleteMapping("{id}")
@@ -76,18 +74,18 @@ public class UserController {
 	
 	@PutMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateId(@PathVariable Long id, @RequestBody @Valid UserDTO personDTO) {
+	public void updateId(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
 		
-		if (personService.updateById(id, personDTO).isEmpty()) {
+		if (personService.updateById(id, userDTO).isEmpty()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	    }
 		
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid UserDTO userDTO) {
 		
-		var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
+		var usernamePassword = new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword());
 		var auth = this.authenticationManager.authenticate(usernamePassword);
 		
 		var token = tokenProvider.generateAccessToken((AuthenticationDTO) auth.getPrincipal());
