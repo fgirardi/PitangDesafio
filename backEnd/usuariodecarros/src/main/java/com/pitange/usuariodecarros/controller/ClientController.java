@@ -4,9 +4,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,13 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.pitange.usuariodecarros.dto.AuthenticationDTO;
-import com.pitange.usuariodecarros.dto.LoginResponseDTO;
 import com.pitange.usuariodecarros.dto.ClientDTO;
-import com.pitange.usuariodecarros.exception.UserCreationException;
+import com.pitange.usuariodecarros.exception.ClientCreationException;
 import com.pitange.usuariodecarros.service.ClientService;
-import com.pitange.usuariodecarros.service.JWTTokenProvider;
-import com.pitange.usuariodecarros.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -35,15 +28,10 @@ public class ClientController {
 
 	private final ClientService clientService;
 	
-	private final AuthenticationManager authenticationManager;
-	
-	private final JWTTokenProvider tokenProvider;
 	
 	@Autowired
-	public ClientController(ClientService clientService, AuthenticationManager authenticationManager, JWTTokenProvider tokenProvider) {
+	public ClientController(ClientService clientService) {
 		this.clientService = clientService;
-		this.authenticationManager = authenticationManager;
-		this.tokenProvider = tokenProvider;
 	}
 
 	@GetMapping
@@ -62,7 +50,7 @@ public class ClientController {
 	 @PostMapping
 	 @ResponseStatus(HttpStatus.CREATED)
 	 public ClientDTO save(@RequestBody @Valid ClientDTO personDTO) {
-		 return clientService.save(personDTO).orElseThrow(() -> new UserCreationException("Failed to create user"));
+		 return clientService.save(personDTO).orElseThrow(() -> new ClientCreationException("Failed to create client"));
 	 }
 	
 	@DeleteMapping("{id}")

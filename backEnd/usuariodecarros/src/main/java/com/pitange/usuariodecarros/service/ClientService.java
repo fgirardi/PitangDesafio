@@ -45,13 +45,6 @@ public class ClientService {
 
 	public Optional<ClientDTO> save(ClientDTO clientDTO) {
 		
-		Optional<Client> client = clientRepository.findByEmail(clientDTO.getEmail());
-		
-		if (client.isPresent()) {
-			//Encontrou alguem e nao pode continuar o processo de save.
-			throw new DuplicateLoginException("Email: " + clientDTO.getEmail() + " already exists.");
-		}
-		
 		Client clientModel = ClientDTO.toModel(clientDTO);
 		clientModel = clientRepository.save(clientModel);
 		

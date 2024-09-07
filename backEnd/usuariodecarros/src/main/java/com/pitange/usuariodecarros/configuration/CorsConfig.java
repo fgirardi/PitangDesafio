@@ -37,6 +37,7 @@ public class CorsConfig {
         corsConfiguration.setAllowedMethods(Arrays.asList("POST", "PUT", "GET", "OPTIONS", "DELETE", "PATCH"));
 
         // Allow credentials (cookies, authorization headers, etc.) to be included in requests
+        // significa que as credenciais (como cookies, cabeçalhos de autorização, etc.) podem ser compartilhadas entre domínios
         corsConfiguration.setAllowCredentials(true);
 
         // Create a source object to hold the URL mapping for the CORS configuration

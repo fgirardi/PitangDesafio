@@ -1,7 +1,10 @@
 package com.pitange.usuariodecarros.service;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pitange.usuariodecarros.dto.UserDTO;
+import com.pitange.usuariodecarros.entities.Roles;
 import com.pitange.usuariodecarros.entities.User;
 import com.pitange.usuariodecarros.exception.DuplicateLoginException;
 import com.pitange.usuariodecarros.repository.UserRepository;
@@ -58,6 +62,16 @@ public class UserService implements UserDetailsService {
 		User userModel = UserDTO.toModel(personDTO);
 		var encryptedPassword = new BCryptPasswordEncoder().encode(userModel.getPassword());
 		userModel.setPassword(encryptedPassword);
+		
+		Roles userRole = Roles.builder()
+                .role("USER") // Definindo o papel como "USER"
+                .build();
+
+		//Adicione o papel ao conjunto de roles do userModel
+		Set<Roles> roles = new HashSet<>();
+		roles.add(userRole);
+		
+		userModel.setRoles(roles);
 		userModel = userRepository.save(userModel);
 		
 		return Optional.of(UserDTO.toDTO(userModel));
@@ -104,6 +118,9 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		return this.userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario Nao encontrado"));
+		User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
+
+        return user;
 	}
 }

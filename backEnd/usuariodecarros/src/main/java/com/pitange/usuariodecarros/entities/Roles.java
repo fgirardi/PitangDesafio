@@ -19,22 +19,20 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
-@Table(name = "lotes")
-@Entity(name = "lotes")
+@Entity
+@Table(name = "roles")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Roles {
-	
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
-	
-	@Column(nullable = false, length = 10)
-	private String role;
-		
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ROLE_ID")
+    private Long id;
+
+    @Column(nullable = false, length = 10)
+    private String role;
 }

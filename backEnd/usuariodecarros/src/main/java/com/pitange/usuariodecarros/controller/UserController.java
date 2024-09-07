@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.pitange.usuariodecarros.dto.AuthenticationDTO;
 import com.pitange.usuariodecarros.dto.LoginResponseDTO;
 import com.pitange.usuariodecarros.dto.UserDTO;
 import com.pitange.usuariodecarros.exception.UserCreationException;
@@ -88,7 +87,7 @@ public class UserController {
 		var usernamePassword = new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword());
 		var auth = this.authenticationManager.authenticate(usernamePassword);
 		
-		var token = tokenProvider.generateAccessToken((AuthenticationDTO) auth.getPrincipal());
+		var token = tokenProvider.generateAccessToken((UserDTO) auth.getPrincipal());
 		
 		return ResponseEntity.ok(new LoginResponseDTO(token));
 		

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pitange.usuariodecarros.dto.AuthenticationDTO;
+import com.pitange.usuariodecarros.dto.UserDTO;
 import com.pitange.usuariodecarros.properties.JwtProperties;
 
 import io.jsonwebtoken.Claims;
@@ -46,12 +46,12 @@ public class JWTTokenProvider {
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, "HmacSHA256");
     }
 
-    public String generateAccessToken(AuthenticationDTO user) {
+    public String generateAccessToken(UserDTO user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.jwtProperties.getSecretKey());
             return JWT.create()
-                    .withSubject(user.login())
-                    .withClaim("username", user.login())
+                    .withSubject(user.getEmail())
+                    .withClaim("email", user.getEmail())
                     .withExpiresAt(Date.from(this.genAccessExpirationDate()))  // Conversão de Instant para Date
                     .sign(algorithm);
         } catch (JWTCreationException exception) {

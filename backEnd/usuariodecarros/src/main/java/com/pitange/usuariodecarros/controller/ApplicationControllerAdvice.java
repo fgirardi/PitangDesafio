@@ -21,7 +21,7 @@ import com.pitange.usuariodecarros.exception.UserCreationException;
  * Autor: [Fabiano Girardi]
  * Data: [25/04/2024]
  */
-@RestControllerAdvice
+//@RestControllerAdvice
 public class ApplicationControllerAdvice {
 	
 	/**

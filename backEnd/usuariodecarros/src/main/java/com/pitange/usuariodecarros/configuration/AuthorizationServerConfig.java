@@ -10,16 +10,13 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.sql.DataSource;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -36,7 +33,7 @@ import java.util.UUID;
 /**
  * Configuração do servidor de autorização.
  */
-@Configuration
+//@Configuration
 public class AuthorizationServerConfig {
 	
 	@Autowired
@@ -110,22 +107,24 @@ public class AuthorizationServerConfig {
 				Ele usa suas credenciais (ID e segredo do cliente) para obter um token de acesso e 
 				fazer chamadas à API diretamente.
      */
-    @Bean
+    //@Bean
     public RegisteredClientRepository registeredClientRepository() {
         
     	// Cria um cliente registrado com ID, clientID, clientSecret, métodos de autenticação, escopos e tipos de concessão
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(this.clientID)
-                .clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.secretKey))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
-                .scope("read")
-                .scope("write")
+                //.clientSecret("{bcrypt}" + new BCryptPasswordEncoder().encode(this.secretKey))
+                .clientSecret("{noop}"+this.secretKey)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .scope("read") //Ler dados das APIs
+                .scope("write") //Escrever dados nas APIs
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri("https://localhost:8080/redirect")
-                .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1))
-                        .refreshTokenTimeToLive(Duration.ofDays(30)).build())
+                .tokenSettings(TokenSettings.builder()
+                		 .accessTokenTimeToLive(Duration.ofHours(1))
+                         .refreshTokenTimeToLive(Duration.ofDays(30)).build())
                 .clientSettings(ClientSettings.builder().build()).build();
         
         
@@ -156,7 +155,7 @@ public class AuthorizationServerConfig {
      * @return o conjunto de chaves JWK
      * @throws Exception se ocorrer um erro ao carregar a chave
      */
-    @Bean
+    //@Bean
     public JWKSet jwkSet(AuthProperties authProperties) throws Exception {
         final var jksProperties = authProperties.getJks();
         final String jksPath = authProperties.getJks().getPath();
@@ -181,7 +180,7 @@ public class AuthorizationServerConfig {
      * @param jwkSet o conjunto de chaves JWK
      * @return a fonte de chaves JWK
      */
-    @Bean
+    //@Bean
     public JWKSource<SecurityContext> jwkSource(JWKSet jwkSet) {
         return ((jwkSelector, securityContext) -> jwkSelector.select(jwkSet));
     }
@@ -192,13 +191,9 @@ public class AuthorizationServerConfig {
      * @param jwkSource a fonte de chaves JWK
      * @return o codificador JWT
      */
-    @Bean
+    //@Bean
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
         return new NimbusJwtEncoder(jwkSource);
     }
     
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
-    }
 }
